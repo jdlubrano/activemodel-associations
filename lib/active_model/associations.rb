@@ -43,6 +43,10 @@ module ActiveModel
           end
         CODE
       end
+
+      def polymorphic_class_for(klass)
+        klass.constantize
+      end
     end
   end
 end
