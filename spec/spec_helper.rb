@@ -6,6 +6,7 @@ require 'byebug'
 require 'pry-byebug'
 
 require 'activemodel/associations'
+require_relative 'db/migrate/10_create_users'
 ActiveModel::Associations::Hooks.init
 
 ActiveRecord::Base.establish_connection(
@@ -15,9 +16,10 @@ ActiveRecord::Base.establish_connection(
 
 # Test Class
 class User < ActiveRecord::Base; end
-
+schema_migration = ActiveRecord::Base.connection.schema_migration
+schema_migration.create_table
 ActiveRecord::Migration.verbose = false
-ActiveRecord::Migrator.migrate File.expand_path("../db/migrate", __FILE__), nil
+ActiveRecord::Migrator.new(:up, [CreateUsers.new], schema_migration).migrate
 
 require 'database_cleaner'
 
