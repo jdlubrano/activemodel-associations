@@ -37,7 +37,7 @@ module ActiveModel::Associations
         if type_name.match(/^::/)
           # If the type is prefixed with a scope operator then we assume that
           # the type_name is an absolute reference.
-          ActiveSupport::Dependencies.constantize(type_name)
+          ActiveSupport::Inflector.constantize(candidate)
         else
           # Build a list of candidates to search for
           candidates = []
@@ -46,7 +46,7 @@ module ActiveModel::Associations
 
           candidates.each do |candidate|
             begin
-              constant = ActiveSupport::Dependencies.constantize(candidate)
+              constant = ActiveSupport::Inflector.constantize(candidate)
               return constant if candidate == constant.to_s
               # We don't want to swallow NoMethodError < NameError errors
             rescue NoMethodError
