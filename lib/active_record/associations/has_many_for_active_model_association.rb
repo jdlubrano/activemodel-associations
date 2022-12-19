@@ -1,6 +1,6 @@
 module ActiveRecord::Associations
   class HasManyForActiveModelAssociation < HasManyAssociation
-    # remove conditions: owner.new_record?, foreign_key_present? 
+    # remove conditions: owner.new_record?, foreign_key_present?
     def find_target?
       !loaded? && klass
     end
@@ -61,6 +61,10 @@ module ActiveRecord::Associations
     end
 
     private
+
+    def skip_statement_cache?(_scope)
+      true
+    end
 
     def get_records
       return scope.to_a if reflection.scope_chain.any?(&:any?)

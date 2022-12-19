@@ -2,7 +2,13 @@ module ActiveModel::Associations
   module AssociationScopeExtension
     if ActiveRecord.version >= Gem::Version.new("7")
       def add_constraints(scope, owner, chain)
-        # byebug
+        refl = chain.first.instance_variable_get(:@reflection)
+
+        if refl.options[:active_model]
+          target_ids = refl.options[:target_ids]
+          return scope.where(id: owner[target_ids])
+        end
+
         super
       end
     elsif ActiveRecord.version >= Gem::Version.new("5.0.0.beta")
