@@ -17,6 +17,18 @@ describe ActiveModel::Associations do
       def []=(attr, value)
         self.send("#{attr}=", value)
       end
+
+      def strict_loading_mode
+        :all
+      end
+
+      def strict_loading?
+        false
+      end
+
+      def strict_loading_n_plus_one_only?
+        false
+      end
     end
 
     class PostBase
@@ -36,6 +48,18 @@ describe ActiveModel::Associations do
 
       def []=(attr, value)
         self.send("#{attr}=", value)
+      end
+
+      def strict_loading_mode
+        :all
+      end
+
+      def strict_loading?
+        false
+      end
+
+      def strict_loading_n_plus_one_only?
+        false
       end
     end
 
@@ -142,6 +166,18 @@ describe ActiveModel::Associations do
 
         def []=(attr, value)
           self.send("#{attr}=", value)
+        end
+
+        def strict_loading_mode
+          :all
+        end
+
+        def strict_loading?
+          false
+        end
+
+        def strict_loading_n_plus_one_only?
+          false
         end
       end
 
