@@ -22,7 +22,7 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency "activemodel", "> 7.0.0"
   spec.add_runtime_dependency "activesupport", "> 7.0.0"
 
-  spec.add_development_dependency "bundler", "~> 2.3.33"
+  spec.add_development_dependency "bundler", "~> 2.3.26"
   spec.add_development_dependency "rake"
   spec.add_development_dependency "rspec"
   spec.add_development_dependency "tapp"

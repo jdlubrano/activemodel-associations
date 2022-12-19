@@ -68,6 +68,8 @@ describe ActiveModel::Associations do
           let(:post) { Post.new(user_id: user.id) }
 
           it "defined accessor loads target ActiveRecord instance" do
+            comment.user
+            post.user
             expect(comment.user).to eq user
             expect(post.user).to eq user
           end
