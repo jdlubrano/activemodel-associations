@@ -23,10 +23,10 @@ describe ActiveModel::Associations do
       extend ActiveModel::Naming
       extend ActiveModel::Callbacks
       include ActiveModel::Model
-      include ActiveModel::Associations
       include ActiveModel::Conversion
       include ActiveModel::Dirty
       include ActiveModel::Validations
+      include ActiveModel::Associations
 
       attr_accessor :user_id
 
@@ -68,8 +68,6 @@ describe ActiveModel::Associations do
           let(:post) { Post.new(user_id: user.id) }
 
           it "defined accessor loads target ActiveRecord instance" do
-            comment.user
-            post.user
             expect(comment.user).to eq user
             expect(post.user).to eq user
           end
@@ -112,6 +110,7 @@ describe ActiveModel::Associations do
 
           user = User.create(name: "joker1007")
           comment = PolymorhicBelongsToComment.new(commenter_id: user.id, commenter_type: "User")
+          comment.commenter
           expect(comment.commenter).to eq user
         end
 

@@ -1,8 +1,20 @@
 module ActiveModel::Associations
   module OverrideMethods
     extend ActiveSupport::Concern
-
     module ClassMethods
+
+      # Returns the class for the provided +name+.
+      #
+      # It is used to find the class correspondent to the value stored in the polymorphic type column.
+      # https://github.com/rails/rails/blob/01f58d62c2f31f42d0184e0add2b6aa710513695/activerecord/lib/active_record/inheritance.rb#L205
+      def polymorphic_class_for(name)
+        name.constantize
+        # if store_full_class_name
+        #   name.constantize
+        # else
+        #   compute_type(name)
+        # end
+      end
       def generated_association_methods
         @generated_association_methods ||= begin
           mod = const_set(:GeneratedAssociationMethods, Module.new)
@@ -33,6 +45,8 @@ module ActiveModel::Associations
 
       protected
 
+      
+
       def compute_type(type_name)
         if type_name.match(/^::/)
           # If the type is prefixed with a scope operator then we assume that
@@ -41,7 +55,7 @@ module ActiveModel::Associations
         else
           # Build a list of candidates to search for
           candidates = []
-          name.scan(/::|$/) { candidates.unshift "#{$`}::#{type_name}" }
+          name.scan(/::|$/) { candidates.unshift "#{::Regexp.last_match.pre_match}::#{type_name}" }
           candidates << type_name
 
           candidates.each do |candidate|
@@ -61,22 +75,21 @@ module ActiveModel::Associations
     # use by association accessor
     def association(name) # :nodoc:
       association = association_instance_get(name)
-
       if association.nil?
-        reflection  = self.class.reflect_on_association(name)
-        if reflection.options[:active_model]
-          association = ActiveRecord::Associations::HasManyForActiveModelAssociation.new(self, reflection)
-        else
-          association = reflection.association_class.new(self, reflection)
-        end
+        reflection = self.class.reflect_on_association(name)
+        association = if reflection.options[:active_model]
+                        ActiveRecord::Associations::HasManyForActiveModelAssociation.new(self, reflection)
+                      else
+                        reflection.association_class.new(self, reflection)
+                      end
         association_instance_set(name, association)
       end
 
       association
     end
 
-    def read_attribute(name)
-      send(name)
+    def read_attribute(attr_name)
+      send(attr_name)
     end
     alias _read_attribute read_attribute
 
@@ -105,19 +118,14 @@ module ActiveModel::Associations
       :all
     end
 
-    # override
-    def foreign_key_present?
-      owner.read_attribute(reflection.foreign_key)
-    end
-
     private
 
     # override
     def validate_collection_association(reflection)
-      if association = association_instance_get(reflection.name)
-        if records = associated_records_to_validate_or_save(association, false, reflection.options[:autosave])
-          records.each { |record| association_valid?(reflection, record) }
-        end
+      if (association = association_instance_get(reflection.name)) && records = associated_records_to_validate_or_save(
+        association, false, reflection.options[:autosave]
+      )
+        records.each { |record| association_valid?(reflection, record) }
       end
     end
 
