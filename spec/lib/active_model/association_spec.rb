@@ -23,10 +23,10 @@ describe ActiveModel::Associations do
       extend ActiveModel::Naming
       extend ActiveModel::Callbacks
       include ActiveModel::Model
-      include ActiveModel::Associations
       include ActiveModel::Conversion
       include ActiveModel::Dirty
       include ActiveModel::Validations
+      include ActiveModel::Associations
 
       attr_accessor :user_id
 
