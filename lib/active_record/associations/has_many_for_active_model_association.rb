@@ -77,22 +77,8 @@ module ActiveRecord::Associations
 
     def merge_target_lists(persisted, memory)
       return persisted if memory.empty?
+
       memory
-
-      # persisted.map! do |record|
-      #   if mem_record = memory.delete(record)
-
-      #     ((record.attribute_names & mem_record.attribute_names) - mem_record.changed_attribute_names_to_save).each do |name|
-      #       mem_record[name] = record[name]
-      #     end
-
-      #     mem_record
-      #   else
-      #     record
-      #   end
-      # end
-
-      # persisted + memory.reject(&:persisted?)
     end
 
     private

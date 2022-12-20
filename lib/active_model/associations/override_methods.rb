@@ -2,19 +2,14 @@ module ActiveModel::Associations
   module OverrideMethods
     extend ActiveSupport::Concern
     module ClassMethods
-
       # Returns the class for the provided +name+.
       #
       # It is used to find the class correspondent to the value stored in the polymorphic type column.
       # https://github.com/rails/rails/blob/01f58d62c2f31f42d0184e0add2b6aa710513695/activerecord/lib/active_record/inheritance.rb#L205
       def polymorphic_class_for(name)
         name.constantize
-        # if store_full_class_name
-        #   name.constantize
-        # else
-        #   compute_type(name)
-        # end
       end
+
       def generated_association_methods
         @generated_association_methods ||= begin
           mod = const_set(:GeneratedAssociationMethods, Module.new)
@@ -120,10 +115,10 @@ module ActiveModel::Associations
 
     # override
     def validate_collection_association(reflection)
-      if (association = association_instance_get(reflection.name)) && records = associated_records_to_validate_or_save(
-        association, false, reflection.options[:autosave]
-      )
-        records.each { |record| association_valid?(reflection, record) }
+      if association = association_instance_get(reflection.name)
+        if records = associated_records_to_validate_or_save(association, false, reflection.options[:autosave])
+          records.each { |record| association_valid?(reflection, record) }
+        end
       end
     end
 

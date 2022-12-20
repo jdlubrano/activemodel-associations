@@ -111,7 +111,6 @@ describe ActiveModel::Associations do
 
           user = User.create(name: "joker1007")
           comment = PolymorhicBelongsToComment.new(commenter_id: user.id, commenter_type: "User")
-          comment.commenter
           expect(comment.commenter).to eq user
         end
 
@@ -174,7 +173,6 @@ describe ActiveModel::Associations do
             group = Group.new
             expect(group.users).to be_empty
             group.users = [user1, user2]
-            group.users
             expect(group.users).to eq [user1, user2]
           end
 
