@@ -1,4 +1,4 @@
-require 'spec_helper'
+require "spec_helper"
 
 describe ActiveModel::Associations do
   context "When included Comment class" do
@@ -11,11 +11,11 @@ describe ActiveModel::Associations do
       belongs_to :user
 
       def [](attr)
-        self.send(attr)
+        send(attr)
       end
 
       def []=(attr, value)
-        self.send("#{attr}=", value)
+        send("#{attr}=", value)
       end
     end
 
@@ -31,11 +31,11 @@ describe ActiveModel::Associations do
       attr_accessor :user_id
 
       def [](attr)
-        self.send(attr)
+        send(attr)
       end
 
       def []=(attr, value)
-        self.send("#{attr}=", value)
+        send("#{attr}=", value)
       end
     end
 
@@ -105,6 +105,7 @@ describe ActiveModel::Associations do
         it "can define polymorphic association" do
           class PolymorhicBelongsToComment < Comment
             attr_accessor :commenter_id, :commenter_type
+
             belongs_to :commenter, polymorphic: true
           end
 
@@ -117,6 +118,7 @@ describe ActiveModel::Associations do
         it "can define different class_name association" do
           class DiffClassNameBelongsToComment < Comment
             attr_accessor :commenter_id
+
             belongs_to :commenter, class_name: "User"
           end
 
@@ -138,11 +140,11 @@ describe ActiveModel::Associations do
         has_many :users
 
         def [](attr)
-          self.send(attr)
+          send(attr)
         end
 
         def []=(attr, value)
-          self.send("#{attr}=", value)
+          send("#{attr}=", value)
         end
       end
 
@@ -172,6 +174,7 @@ describe ActiveModel::Associations do
             group = Group.new
             expect(group.users).to be_empty
             group.users = [user1, user2]
+            group.users
             expect(group.users).to eq [user1, user2]
           end
 
@@ -236,6 +239,7 @@ describe ActiveModel::Associations do
         it "can define different class_name association" do
           class DiffClassNameHasManyGroup < Group
             attr_reader :member_ids
+
             has_many :members, class_name: "User"
           end
 
@@ -245,9 +249,9 @@ describe ActiveModel::Associations do
           expect(group.members).to eq [user]
         end
 
-        %i(through dependent source source_type counter_cache as).each do |option_name|
+        %i[through dependent source source_type counter_cache as].each do |option_name|
           it "#{option_name} option is unsupported" do
-            expect {
+            expect do
               eval <<-CODE
                 class #{option_name.to_s.classify}Group
                   include ActiveModel::Model
@@ -256,7 +260,7 @@ describe ActiveModel::Associations do
                   has_many :users, #{option_name}: true
                 end
               CODE
-            }.to raise_error(ArgumentError)
+            end.to raise_error(ArgumentError)
           end
         end
       end

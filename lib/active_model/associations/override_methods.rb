@@ -45,8 +45,6 @@ module ActiveModel::Associations
 
       protected
 
-      
-
       def compute_type(type_name)
         if type_name.match(/^::/)
           # If the type is prefixed with a scope operator then we assume that

@@ -1,6 +1,6 @@
 module ActiveRecord::Associations
   class HasManyForActiveModelAssociation < HasManyAssociation
-    # remove conditions: owner.new_record?, foreign_key_present? 
+    # remove conditions: owner.new_record?, foreign_key_present?
     def find_target?
       !loaded? && klass
     end
@@ -38,6 +38,7 @@ module ActiveRecord::Associations
           @target << record
         end
       end
+      @target
     end
 
     # no need transaction
@@ -58,6 +59,40 @@ module ActiveRecord::Associations
       end
 
       target
+    end
+
+    def find_target
+      if violates_strict_loading? && owner.validation_context.nil?
+        Base.strict_loading_violation!(owner: owner.class, reflection: reflection)
+      end
+      scope = self.scope
+      return scope.to_a if skip_statement_cache?(scope)
+
+      reflection.association_scope_cache(klass, owner) do |params|
+        as = AssociationScope.create { params.bind }
+        target_scope.merge!(as.scope(self))
+      end
+      target_scope.to_a
+    end
+
+    def merge_target_lists(persisted, memory)
+      return persisted if memory.empty?
+      memory
+
+      # persisted.map! do |record|
+      #   if mem_record = memory.delete(record)
+
+      #     ((record.attribute_names & mem_record.attribute_names) - mem_record.changed_attribute_names_to_save).each do |name|
+      #       mem_record[name] = record[name]
+      #     end
+
+      #     mem_record
+      #   else
+      #     record
+      #   end
+      # end
+
+      # persisted + memory.reject(&:persisted?)
     end
 
     private
