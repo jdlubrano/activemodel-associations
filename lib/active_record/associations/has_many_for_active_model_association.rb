@@ -61,9 +61,12 @@ module ActiveRecord::Associations
       target
     end
 
-    def skip_statement_cache?(_scope)
-      true
+    def find_target
+      # scope = self.scope
+      self.scope.to_a
     end
+
+
 
     private
 
