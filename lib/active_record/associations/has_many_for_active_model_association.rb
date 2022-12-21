@@ -61,24 +61,8 @@ module ActiveRecord::Associations
       target
     end
 
-    def find_target
-      if violates_strict_loading? && owner.validation_context.nil?
-        Base.strict_loading_violation!(owner: owner.class, reflection: reflection)
-      end
-      scope = self.scope
-      return scope.to_a if skip_statement_cache?(scope)
-
-      reflection.association_scope_cache(klass, owner) do |params|
-        as = AssociationScope.create { params.bind }
-        target_scope.merge!(as.scope(self))
-      end
-      target_scope.to_a
-    end
-
-    def merge_target_lists(persisted, memory)
-      return persisted if memory.empty?
-
-      memory
+    def skip_statement_cache?(_scope)
+      true
     end
 
     private

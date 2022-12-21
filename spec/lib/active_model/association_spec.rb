@@ -145,6 +145,7 @@ describe ActiveModel::Associations do
         def []=(attr, value)
           send("#{attr}=", value)
         end
+
       end
 
       let(:group) { Group.new }
@@ -187,6 +188,7 @@ describe ActiveModel::Associations do
           it "receives target ActiveRecord CollectionProxy, and set target_ids attributes" do
             group = Group.new
             expect(group.users).to be_empty
+            expect(group.users).to eq([])
             group.users = User.all
             expect(group.users).to eq [user1, user2]
           end
@@ -195,7 +197,9 @@ describe ActiveModel::Associations do
             user3 = User.create(name: "jotaro")
             group = Group.new
             expect(group.users).to be_empty
+            expect(group.users).to eq([])
             group.users = [user1, user2]
+            group.users.where(id: 1)
             group.users = [user3]
             expect(group.users).to eq [user3]
           end
@@ -218,6 +222,7 @@ describe ActiveModel::Associations do
 
           it "can access target ActiveRecord instance" do
             expect(group.users).to be_empty
+            expect(group.users).to eq([])
             group.user_ids = [user.id]
             expect(group.users).to eq [user]
           end
@@ -229,6 +234,7 @@ describe ActiveModel::Associations do
 
           it "can concat" do
             expect(group.users).to be_empty
+            expect(group.users).to eq([])
             group.users << user
             expect(group.users).to eq [user]
           end
